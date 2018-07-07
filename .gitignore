@@ -1,0 +1,27 @@
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### maven ###
+target/
+.mvn/
+mvnw
+mvnw.cmd
+
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### h2-db ####
+*.db
