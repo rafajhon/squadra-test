@@ -2,6 +2,7 @@ package com.test.squadra.api.jobs.api.models;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class Job {
     @OneToOne()
     public Job parentJob;
 
-    @ManyToMany()
+    @OneToMany
     public List<Task> tasks;
 
     public Job() {

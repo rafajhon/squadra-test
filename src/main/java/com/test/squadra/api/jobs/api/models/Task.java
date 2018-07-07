@@ -3,6 +3,7 @@ package com.test.squadra.api.jobs.api.models;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 
 @Entity
@@ -15,6 +16,8 @@ public class Task {
     public Integer weight;
     public Boolean completed;
     public LocalDate createdAt = LocalDate.now();
+    @ManyToOne
+    public Job job;
 
 
     public Long getId() {
