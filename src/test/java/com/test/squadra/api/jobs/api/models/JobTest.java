@@ -4,11 +4,16 @@ package com.test.squadra.api.jobs.api.models;
 import com.test.squadra.api.jobs.api.ApplicationTests;
 import com.test.squadra.api.jobs.api.repositorys.JobRepository;
 import com.test.squadra.api.jobs.api.repositorys.TaskRepository;
-import org.junit.Assert;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class JobTest extends ApplicationTests {
     @Autowired
     JobRepository jobRepository;
@@ -24,7 +29,7 @@ public class JobTest extends ApplicationTests {
         job.active = true;
         job.name = "teste";
         jobRepository.save(job);
-        Assert.assertNotNull(jobRepository.findByName("teste"));
+        assertNotNull(jobRepository.findByName("teste"));
         jobRepository.delete(job);
     }
 
@@ -42,7 +47,7 @@ public class JobTest extends ApplicationTests {
         jobRepository.save(job);
         job = null;
         job = jobRepository.findByName("teste");
-        Assert.assertNotNull(job.tasks);
+        assertNotNull(job.tasks);
         jobRepository.delete(job);
 
     }
@@ -62,9 +67,9 @@ public class JobTest extends ApplicationTests {
         jobRepository.save(job);
         job = null;
         job = jobRepository.findByName("teste");
-        Assert.assertNotNull(job.tasks);
-        Assert.assertEquals(job.parentJob.id, parentjob.id);
-        Assert.assertEquals(job.parentJob.name, parentjob.name);
+        assertNotNull(job.tasks);
+        assertEquals(job.parentJob.id, parentjob.id);
+        assertEquals(job.parentJob.name, parentjob.name);
         jobRepository.delete(job);
         jobRepository.delete(parentjob);
     }
