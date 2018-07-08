@@ -43,6 +43,15 @@ public class JobController {
     public Job getjob(@PathVariable(value = "jobId") String jobId){
         return jobService.getJobsById(Long.valueOf(jobId));
     }
+    @DeleteMapping( value= "/jobs/{jobId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public  ResponseEntity<String> Deletejob(@PathVariable(value = "jobId") String jobId){
+        try {
+            jobService.deleteJob(Long.valueOf(jobId));
+            return ResponseEntity.ok().body("deleted");
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 
 }

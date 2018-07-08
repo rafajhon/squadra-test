@@ -78,4 +78,8 @@ public class JobService {
             return jobOptional.get();
         return null;
     }
+
+    public void deleteJob(Long id) {
+       jobRepository.deleteById(id);
+    }
 }

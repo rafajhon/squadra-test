@@ -19,6 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDate;
 
 import static com.test.squadra.api.jobs.api.utils.Date.LocalDateUtils.stringToLocalDate;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -94,6 +97,20 @@ class JobControllerTest extends ApplicationTests {
     public void testGetJobIdNoneExist() throws Exception {
         mockMvc.perform(get("/jobs/"+1))
                 .andExpect(status().isOk()).andDo(print()).andExpect(content().string(""));
+    }
+
+    @Test
+    public void testDeletedJob() throws Exception {
+        Job job = utilsTest.criaJob("job 1", 1);
+        assertNotNull(utilsTest.jobService.findJobByName("job 1"));
+        mockMvc.perform(delete("/jobs/"+job.id))
+                .andExpect(status().isOk()).andDo(print()).andExpect(content().string("deleted"));
+        assertNull(utilsTest.jobService.findJobByName("job 1"));
+    }
+    @Test
+    public void testDeletedJobIdNoneExist() throws Exception {
+        mockMvc.perform(delete("/jobs/"+1))
+                .andExpect(status().isBadRequest()).andDo(print()).andExpect(content().string("No class com.test.squadra.api.jobs.api.models.Job entity with id 1 exists!"));
     }
 
 

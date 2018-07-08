@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @Service
 public class UtilsTest {
 
-    TaskRepository taskRepository;
-    JobService jobService;
+    public TaskRepository taskRepository;
+    public JobService jobService;
 
     @Autowired
     public UtilsTest(TaskRepository taskRepository, JobService jobService) {
