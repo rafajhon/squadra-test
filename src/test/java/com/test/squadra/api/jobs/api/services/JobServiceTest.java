@@ -18,7 +18,7 @@ class JobServiceTest extends ApplicationTests {
         Job job = new Job();
         job.active = true;
         job.name = "teste";
-        jobService.jobRepository.save(job);
+        jobService.saveJob(job);
         assertEquals(1,jobService.listAllJobs().size());
     }
 }

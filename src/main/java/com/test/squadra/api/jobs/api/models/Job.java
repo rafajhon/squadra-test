@@ -2,7 +2,6 @@ package com.test.squadra.api.jobs.api.models;
 
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,11 +12,21 @@ public class Job {
     public Long id;
     public String name;
     public Boolean active;
+
     @OneToOne()
     public Job parentJob;
 
     @OneToMany
     public List<Task> tasks;
+    public Integer weightJob;
+
+    public Integer getWeightJob() {
+        return weightJob;
+    }
+
+    public void setWeightJob(Integer weightJob) {
+        this.weightJob = weightJob;
+    }
 
     public Job() {
         this.tasks = new LinkedList<>();
