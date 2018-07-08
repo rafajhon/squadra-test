@@ -3,12 +3,12 @@ package com.test.squadra.api.jobs.api.models;
 
 import com.test.squadra.api.jobs.api.ApplicationTests;
 import com.test.squadra.api.jobs.api.repositorys.TaskRepository;
-
 import com.test.squadra.api.jobs.api.services.JobService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,11 +23,11 @@ public class JobTest extends ApplicationTests {
 
 
     @Test
-    @Transactional
     public void testModelJob(){
         Job job = new Job();
         job.active = true;
         job.name = "teste";
+        job.id = Long.valueOf(1);
         jobService.saveJob(job);
         assertNotNull(jobService.findJobByName("teste"));
     }
@@ -37,11 +37,14 @@ public class JobTest extends ApplicationTests {
         Job job = new Job();
         job.active = true;
         job.name = "teste";
+        job.id = Long.valueOf(1);
         jobService.saveJob(job);
         Task task = new Task();
+        task.id = Long.valueOf(1);
         task.name = "tesk teste";
         task.completed = true;
         task.weight = 2;
+        task.createdAt = LocalDate.now();
         taskRepository.save(task);
         job.tasks.add(task);
         jobService.saveJob(job);
@@ -57,10 +60,12 @@ public class JobTest extends ApplicationTests {
         Job job = new Job();
         job.active = true;
         job.name = "teste";
+        job.id = Long.valueOf(1);
         jobService.saveJob(job);
         Job parentjob = new Job();
         parentjob.active = true;
         parentjob.name = "patentJob teste";
+        parentjob.id = Long.valueOf(2);
         jobService.saveJob(parentjob);
         job.parentJob = parentjob;
         jobService.saveJob(job);

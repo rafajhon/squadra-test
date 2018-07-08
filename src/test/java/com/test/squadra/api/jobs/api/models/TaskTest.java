@@ -22,6 +22,8 @@ public class TaskTest extends ApplicationTests {
         task.name = "tesk teste";
         task.completed = true;
         task.createdAt = LocalDate.now();
+        task.id = Long.valueOf(2);
+        task.weight = 2;
         taskRepository.save(task);
         assertNotNull(taskRepository.findAll());
     }

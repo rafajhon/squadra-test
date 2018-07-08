@@ -4,18 +4,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
 public class Task {
 
     @Id
-    @GeneratedValue
+    @NotNull
     public Long id;
+    @NotBlank(message = "field name required")
     public String name;
+    @NotNull(message = "field weight required")
     public Integer weight;
+    @NotNull(message = "field completed required")
     public Boolean completed;
-    public LocalDate createdAt = LocalDate.now();
+    @NotNull(message = "field createdAt required")
+    public LocalDate createdAt;
     @ManyToOne
     public Job job;
 

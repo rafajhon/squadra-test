@@ -2,21 +2,26 @@ package com.test.squadra.api.jobs.api.models;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
 public class Job {
     @Id
-    @GeneratedValue
+    @NotNull
     public Long id;
+    @NotBlank(message = "required name is unique")
+    @Column(unique=true)
     public String name;
+    @NotNull(message = "field active required")
     public Boolean active;
 
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.PERSIST)
     public Job parentJob;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     public List<Task> tasks;
     public Integer weightJob;
 
