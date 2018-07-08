@@ -2,6 +2,8 @@ package com.test.squadra.api.jobs.api.services;
 
 import com.test.squadra.api.jobs.api.models.Job;
 import com.test.squadra.api.jobs.api.repositorys.JobRepository;
+import com.test.squadra.api.jobs.api.repositorys.TaskRepository;
+import com.test.squadra.api.jobs.api.utils.exceptions.JobException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,12 @@ public class JobService {
 
     public  final JobRepository jobRepository;
 
+    public final TaskRepository taskRepository;
+
     @Autowired
-    public JobService(JobRepository jobRepository) {
+    public JobService(JobRepository jobRepository, TaskRepository taskRepository) {
         this.jobRepository = jobRepository;
+        this.taskRepository = taskRepository;
     }
 
 
@@ -35,12 +40,34 @@ public class JobService {
 
     public Job saveJob(Job job){
         job.weightJob = 0;
-        job.tasks.forEach(task -> job.weightJob +=task.weight );
+        if(job.tasks != null){
+            job.tasks.forEach(task -> job.weightJob+=task.weight );
+        }
         jobRepository.save(job);
         return job;
     }
 
     public Job findJobByName(String name) {
         return jobRepository.findByName(name);
+    }
+
+    public void validJob(Job job) throws JobException {
+        if(job == null){
+            throw new JobException("job NUll");
+        }
+    }
+
+    public void addJob(Job job) {
+        if(job.tasks != null){
+            job.tasks.forEach(task ->taskRepository.save(task));
+        }
+        if(job.parentJob != null){
+            Job parentJob = jobRepository.findByName(job.parentJob.name);
+            if(parentJob != null) {
+                job.parentJob = parentJob;
+            }else
+                job.parentJob = jobRepository.save(job.parentJob);
+        }
+        saveJob(job);
     }
 }

@@ -1,6 +1,7 @@
 package com.test.squadra.api.jobs.api.controllers;
 
 import com.test.squadra.api.jobs.api.ApplicationTests;
+import com.test.squadra.api.jobs.api.UtilsTest;
 import com.test.squadra.api.jobs.api.models.Job;
 import com.test.squadra.api.jobs.api.models.Task;
 import com.test.squadra.api.jobs.api.repositorys.JobRepository;
@@ -17,7 +18,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 
+import static com.test.squadra.api.jobs.api.utils.Date.LocalDateUtils.stringToLocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,10 +33,7 @@ class JobControllerTest extends ApplicationTests {
     WebApplicationContext webApplicationContext;
 
     @Autowired
-    JobService jobService;
-
-    @Autowired
-    TaskRepository taskRepository;
+    UtilsTest utilsTest;
 
     @BeforeEach
     public void setup() throws Exception {
@@ -48,65 +48,39 @@ class JobControllerTest extends ApplicationTests {
     }
     @Test
     public void testListarJobBysortByWeight() throws Exception {
-        Job firstJob = criaJob("job 1", 1);
-        Job secondJob = criaJob("job 2", 2);
-        Job threeJob = criaJob("job 3", 3);
+        Job firstJob = utilsTest.criaJob("job 1", 1);
+        Job secondJob = utilsTest.criaJob("job 2", 2);
+        Job threeJob = utilsTest.criaJob("job 3", 3);
         mockMvc.perform(get("/jobs").param("sortByWeight", String.valueOf(true)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
-                .andExpect(content().string("["+getJsonJobCompare(threeJob)+","+getJsonJobCompare
-                        (secondJob)+","+getJsonJobCompare(firstJob)+"]"));
+                .andExpect(content().string("["+utilsTest.getJsonJobCompare(threeJob)+"," +
+                        ""+utilsTest.getJsonJobCompare
+                        (secondJob)+","+utilsTest.getJsonJobCompare(firstJob)+"]"));
     }
 
-    private String getJsonJobCompare(Job job) {
-        return "{" +
-                    "\"id\":"+job.id+"," +
-                    "\"name\":\""+job.name+"\"," +
-                    "\"active\":"+job.active+"," +
-                     getJsonParentJobCompare(job.parentJob) +
-                    "\"tasks\":["+ getJsonTaksCompare(job.tasks.get(0))+"]" +
-                "}";
-    }
-
-    private  String getJsonParentJobCompare(Job parentJob){
-        if(parentJob != null){
-            return "\"parentJob\":{" +
-                    "\"id\":"+parentJob.id+"," +
-                    "\"name\":\""+parentJob.name+"\"," +
-                    "\"active\":"+parentJob.active+"" +
-                    "},";
-        }
-        return "";
-    }
-
-    private String getJsonTaksCompare(Task task){
-        return "{" +
-                    "\"id\":"+task.id+"," +
-                    "\"name\":\""+task.name+"\"," +
-                    "\"weight\":"+task.weight+"," +
-                    "\"completed\":"+task.completed+"," +
-                    "\"createdAt\":\""+task.createdAt+"\"" +
-                "}";
-    }
-
-
-    private Job criaJob(String name, int weightTash) {
+    @Test
+    public void tetAddJob() throws Exception {
         Job job = new Job();
-        job.name = name;
+        job.id = Long.valueOf(1);
+        job.name = "Job1";
         job.active = true;
-        job.tasks.add(criaTask(weightTash));
-        jobService.saveJob(job);
-        return job;
-
-    }
-
-    private Task criaTask(int weightTash) {
         Task task = new Task();
+        task.id = Long.valueOf(1);
         task.name = "First task";
-        task.weight = weightTash;
+        task.weight = 5;
         task.completed = true;
-        task.createdAt = LocalDate.now();
-        taskRepository.save(task);
-        return task;
+        task.createdAt = stringToLocalDate("2018-07-07");
+        job.tasks.add(task);
+        Job parentJob = new Job();
+        parentJob.id = Long.valueOf(2);
+        parentJob.name = "Second job";
+        parentJob.active = false;
+        job.parentJob = parentJob;
+        mockMvc.perform(post("/jobs").header("Content-Type",
+                "application/json").content(utilsTest.getJsonJobCompare(job)))
+                .andExpect(status().isOk()).andExpect(content().string("created"));
     }
+
+
 }
