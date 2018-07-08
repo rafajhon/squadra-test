@@ -7,12 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
-import java.util.jar.JarException;
 
 @RestController("/jobs")
 public class JobController {
@@ -41,4 +38,11 @@ public class JobController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping( value= "/jobs/{jobId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Job getjob(@PathVariable(value = "jobId") String jobId){
+        return jobService.getJobsById(Long.valueOf(jobId));
+    }
+
+
 }

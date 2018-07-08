@@ -60,7 +60,7 @@ class JobControllerTest extends ApplicationTests {
     }
 
     @Test
-    public void tetAddJob() throws Exception {
+    public void testAddJob() throws Exception {
         Job job = new Job();
         job.id = Long.valueOf(1);
         job.name = "Job1";
@@ -80,6 +80,20 @@ class JobControllerTest extends ApplicationTests {
         mockMvc.perform(post("/jobs").header("Content-Type",
                 "application/json").content(utilsTest.getJsonJobCompare(job)))
                 .andExpect(status().isOk()).andExpect(content().string("created"));
+    }
+
+    @Test
+    public void testGetJob() throws Exception {
+        Job job = utilsTest.criaJob("job 1", 1);
+        mockMvc.perform(get("/jobs/"+job.id))
+                .andExpect(status().isOk()).andDo(print()).andExpect(content().json(utilsTest
+                .getJsonJobCompare
+                (job)));
+    }
+    @Test
+    public void testGetJobIdNoneExist() throws Exception {
+        mockMvc.perform(get("/jobs/"+1))
+                .andExpect(status().isOk()).andDo(print()).andExpect(content().string(""));
     }
 
 
