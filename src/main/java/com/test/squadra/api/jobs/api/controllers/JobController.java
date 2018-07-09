@@ -3,6 +3,8 @@ package com.test.squadra.api.jobs.api.controllers;
 import com.test.squadra.api.jobs.api.models.Job;
 import com.test.squadra.api.jobs.api.services.JobService;
 import com.test.squadra.api.jobs.api.utils.exceptions.JobException;
+import com.test.squadra.api.jobs.api.utils.exceptions.TaskExeception;
+import com.test.squadra.api.jobs.api.validation.JobValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,27 +16,27 @@ import java.util.List;
 @RestController("/jobs")
 public class JobController {
 
-    private JobService jobService;
+    private final JobService jobService;
+    private final JobValidation jobValidation;
 
     @Autowired
-    public JobController(JobService jobService) {
+    public JobController(JobService jobService, JobValidation jobValidation) {
         this.jobService = jobService;
+        this.jobValidation = jobValidation;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Job>listar(@RequestParam(value = "sortByWeight",required= false)
-                                       Boolean sortByWeight){
-
+    public List<Job>listar(@RequestParam(value = "sortByWeight",required= false)Boolean sortByWeight){
         return jobService.getJobs(sortByWeight);
     }
 
     @PostMapping
-    public ResponseEntity<String> addJob( @RequestBody Job job){
+    public ResponseEntity<String> addJob( @RequestBody Job job) throws TaskExeception {
         try {
-            jobService.validJob(job);
+            jobValidation.validJob(job);
             jobService.addJob(job);
             return ResponseEntity.ok().body("created");
-        }catch (JobException e) {
+        }catch (JobException|TaskExeception e ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -43,6 +45,7 @@ public class JobController {
     public Job getjob(@PathVariable(value = "jobId") String jobId){
         return jobService.getJobsById(Long.valueOf(jobId));
     }
+
     @DeleteMapping( value= "/jobs/{jobId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public  ResponseEntity<String> Deletejob(@PathVariable(value = "jobId") String jobId){
         try {
@@ -53,5 +56,14 @@ public class JobController {
         }
     }
 
-
+    @PutMapping( value= "/jobs/{jobId}",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public ResponseEntity<String> atulizaJob(@PathVariable(value = "jobId") String jobId,@RequestBody Job job)  {
+        try {
+            jobValidation.validJob(job);
+            jobService.updateJob(job, Long.valueOf(jobId));
+            return ResponseEntity.ok().body("update");
+        }catch (JobException |TaskExeception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

@@ -54,25 +54,34 @@ public class UtilsTest {
     }
 
 
-    public Job criaJob(String name, int weightTash) {
-        Job job = new Job();
-        job.name = name;
-        job.active = true;
-        job.id = Long.valueOf(weightTash);
-        job.tasks.add(criaTask(weightTash));
+    public Job createJobPersist(String name, int weightTash) {
+        Job job = createJobNew(name, weightTash);
+        job.tasks.add(createTaskPersist(weightTash));
         jobService.saveJob(job);
         return job;
 
     }
+    public Job createJobNew(String name, int weightTash){
+        Job job = new Job();
+        job.name = name;
+        job.active = true;
+        job.id = Long.valueOf(weightTash);
+        return job;
+    }
 
-    private Task criaTask(int weightTash) {
+    public Task createTaskPersist(int weightTash) {
+        Task task = createNewtask(weightTash);
+        taskRepository.save(task);
+        return task;
+    }
+
+    public Task createNewtask(int weightTash){
         Task task = new Task();
         task.name = "First task";
         task.weight = weightTash;
         task.completed = true;
         task.createdAt = LocalDate.now();
         task.id = Long.valueOf(weightTash);
-        taskRepository.save(task);
         return task;
     }
 }

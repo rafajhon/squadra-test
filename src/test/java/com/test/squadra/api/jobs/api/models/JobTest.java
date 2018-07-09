@@ -29,7 +29,7 @@ public class JobTest extends ApplicationTests {
         job.name = "teste";
         job.id = Long.valueOf(1);
         jobService.saveJob(job);
-        assertNotNull(jobService.findJobByName("teste"));
+        assertNotNull(jobService.getJobByName("teste"));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class JobTest extends ApplicationTests {
         job.tasks.add(task);
         jobService.saveJob(job);
         job = null;
-        job = jobService.findJobByName("teste");
+        job = jobService.getJobByName("teste");
         assertNotNull(job.tasks);
 
     }
@@ -70,7 +70,7 @@ public class JobTest extends ApplicationTests {
         job.parentJob = parentjob;
         jobService.saveJob(job);
         job = null;
-        job = jobService.findJobByName("teste");
+        job = jobService.getJobByName("teste");
         assertNotNull(job.tasks);
         assertEquals(job.parentJob.id, parentjob.id);
         assertEquals(job.parentJob.name, parentjob.name);

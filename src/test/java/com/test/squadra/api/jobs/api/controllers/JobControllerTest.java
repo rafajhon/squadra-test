@@ -4,9 +4,6 @@ import com.test.squadra.api.jobs.api.ApplicationTests;
 import com.test.squadra.api.jobs.api.UtilsTest;
 import com.test.squadra.api.jobs.api.models.Job;
 import com.test.squadra.api.jobs.api.models.Task;
-import com.test.squadra.api.jobs.api.repositorys.JobRepository;
-import com.test.squadra.api.jobs.api.repositorys.TaskRepository;
-import com.test.squadra.api.jobs.api.services.JobService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDate;
-
 import static com.test.squadra.api.jobs.api.utils.Date.LocalDateUtils.stringToLocalDate;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,9 +44,9 @@ class JobControllerTest extends ApplicationTests {
     }
     @Test
     public void testListarJobBysortByWeight() throws Exception {
-        Job firstJob = utilsTest.criaJob("job 1", 1);
-        Job secondJob = utilsTest.criaJob("job 2", 2);
-        Job threeJob = utilsTest.criaJob("job 3", 3);
+        Job firstJob = utilsTest.createJobPersist("job 1", 1);
+        Job secondJob = utilsTest.createJobPersist("job 2", 2);
+        Job threeJob = utilsTest.createJobPersist("job 3", 3);
         mockMvc.perform(get("/jobs").param("sortByWeight", String.valueOf(true)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
@@ -75,19 +68,14 @@ class JobControllerTest extends ApplicationTests {
         task.completed = true;
         task.createdAt = stringToLocalDate("2018-07-07");
         job.tasks.add(task);
-        Job parentJob = new Job();
-        parentJob.id = Long.valueOf(2);
-        parentJob.name = "Second job";
-        parentJob.active = false;
-        job.parentJob = parentJob;
         mockMvc.perform(post("/jobs").header("Content-Type",
-                "application/json").content(utilsTest.getJsonJobCompare(job)))
+                "application/json").content(utilsTest.getJsonJobCompare(job))).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().string("created"));
     }
 
     @Test
     public void testGetJob() throws Exception {
-        Job job = utilsTest.criaJob("job 1", 1);
+        Job job = utilsTest.createJobPersist("job 1", 1);
         mockMvc.perform(get("/jobs/"+job.id))
                 .andExpect(status().isOk()).andDo(print()).andExpect(content().json(utilsTest
                 .getJsonJobCompare
@@ -101,16 +89,27 @@ class JobControllerTest extends ApplicationTests {
 
     @Test
     public void testDeletedJob() throws Exception {
-        Job job = utilsTest.criaJob("job 1", 1);
-        assertNotNull(utilsTest.jobService.findJobByName("job 1"));
+        Job job = utilsTest.createJobPersist("job 1", 1);
+        assertNotNull(utilsTest.jobService.getJobByName("job 1"));
         mockMvc.perform(delete("/jobs/"+job.id))
                 .andExpect(status().isOk()).andDo(print()).andExpect(content().string("deleted"));
-        assertNull(utilsTest.jobService.findJobByName("job 1"));
+        assertNull(utilsTest.jobService.getJobByName("job 1"));
     }
     @Test
     public void testDeletedJobIdNoneExist() throws Exception {
         mockMvc.perform(delete("/jobs/"+1))
                 .andExpect(status().isBadRequest()).andDo(print()).andExpect(content().string("No class com.test.squadra.api.jobs.api.models.Job entity with id 1 exists!"));
+    }
+
+    @Test
+    public void testPutJob() throws Exception {
+        int numAux = 1;
+        Job job = utilsTest.createJobPersist("job 1", numAux);
+        job.name = "Alterer job";
+        mockMvc.perform(put("/jobs/"+numAux).header("Content-Type",
+                "application/json").content(utilsTest.getJsonJobCompare(job))).andDo
+                (print()).andExpect(status().isOk()).andExpect(content().string("update"));
+
     }
 
 
