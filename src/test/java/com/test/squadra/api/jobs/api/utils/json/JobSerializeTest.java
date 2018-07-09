@@ -15,7 +15,7 @@ class JobSerializeTest extends ApplicationTests {
     @Test
     void serialize() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JobjsonModule());
+        objectMapper.registerModule(new JsonModuleAdd());
         Job job = new Job();
         job.id = Long.valueOf(1);
         job.name = "Job1";
@@ -59,7 +59,7 @@ class JobSerializeTest extends ApplicationTests {
     @Test
     void serializeParentJobNull() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JobjsonModule());
+        objectMapper.registerModule(new JsonModuleAdd());
         Job job = new Job();
         job.id = Long.valueOf(1);
         job.name = "Job1";
@@ -94,7 +94,7 @@ class JobSerializeTest extends ApplicationTests {
     @Test
     void serializeTaskEmpty() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JobjsonModule());
+        objectMapper.registerModule(new JsonModuleAdd());
         Job job = new Job();
         job.id = Long.valueOf(1);
         job.name = "Job1";

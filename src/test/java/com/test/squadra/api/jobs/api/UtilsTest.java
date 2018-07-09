@@ -43,7 +43,7 @@ public class UtilsTest {
         return "";
     }
 
-    private String getJsonTaksCompare(Task task){
+    public String getJsonTaksCompare(Task task){
         return "{" +
                 "\"id\":"+task.id+"," +
                 "\"name\":\""+task.name+"\"," +
