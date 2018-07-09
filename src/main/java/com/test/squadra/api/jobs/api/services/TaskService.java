@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.test.squadra.api.jobs.api.utils.Date.LocalDateUtils.stringToLocalDate;
 
 @Service
 public class TaskService {
@@ -57,5 +60,17 @@ public class TaskService {
 
     public int countTasks() {
         return Math.toIntExact(taskRepository.count());
+    }
+
+    public List<Task> getTasks(String createdAt) {
+        if(createdAt != null && !createdAt.isEmpty()){
+            LocalDate localDate = stringToLocalDate(createdAt);
+            return taskRepository.findByCreatedAt(localDate);
+        }
+        return taskRepository.findAll();
+    }
+
+    public Task saveTask(Task taskPersist) {
+        return taskRepository.save(taskPersist);
     }
 }

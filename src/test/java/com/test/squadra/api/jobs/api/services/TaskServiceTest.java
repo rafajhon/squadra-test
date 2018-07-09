@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,5 +75,24 @@ class TaskServiceTest extends ApplicationTests {
             jobService.getJobDb(Long.valueOf(1));
         });
         assertEquals("Job not found",jobException.getMessage());
+    }
+
+    @Test
+    void getTasksAll() {
+        utilsTest.createTaskPersist(1);
+        utilsTest.createTaskPersist(2);
+        List<Task> tasks = taskService.getTasks("");
+        assertEquals(2,tasks.size());
+    }
+    @Test
+    void getTasksByDate(){
+        utilsTest.createTaskPersist(1);
+        Task taskPersist = utilsTest.createTaskPersist(2);
+        taskPersist.createdAt = LocalDate.now().plusDays(2);
+        taskService.saveTask(taskPersist);
+        List<Task> tasks = taskService.getTasks(LocalDate.now().toString());
+        assertEquals(1,tasks.size());
+        tasks = taskService.getTasks("");
+        assertEquals(2,tasks.size());
     }
 }
