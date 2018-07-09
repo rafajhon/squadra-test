@@ -1,6 +1,8 @@
 package com.test.squadra.api.jobs.api.models;
 
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,8 +23,9 @@ public class Job {
     @OneToOne(cascade = CascadeType.PERSIST)
     public Job parentJob;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER, orphanRemoval = true)
     public List<Task> tasks;
+
     public Integer weightJob;
 
     public Integer getWeightJob() {

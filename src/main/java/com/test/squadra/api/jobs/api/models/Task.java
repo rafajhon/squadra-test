@@ -1,5 +1,7 @@
 package com.test.squadra.api.jobs.api.models;
 
+import org.hibernate.annotations.OnDelete;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,8 +24,7 @@ public class Task {
     public Boolean completed;
     @NotNull(message = "field createdAt required")
     public LocalDate createdAt;
-    @ManyToOne
-    public Job job;
+
 
 
     public Long getId() {
