@@ -1,11 +1,7 @@
 package com.test.squadra.api.jobs.api.models;
 
-import org.hibernate.annotations.OnDelete;
-
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -20,9 +16,7 @@ public class Task {
     public String name;
     @NotNull(message = "field weight required")
     public Integer weight;
-    @NotNull(message = "field completed required")
     public Boolean completed;
-    @NotNull(message = "field createdAt required")
     public LocalDate createdAt;
 
     @Override

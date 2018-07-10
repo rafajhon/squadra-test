@@ -77,7 +77,11 @@ public class TaskService {
         return taskRepository.save(taskPersist);
     }
 
-    public void addTask(Task task) {
+    public void addTask(Task task) throws TaskExeception {
+        if(taskRepository.existsById(task.id)){
+            throw new TaskExeception("task exist");
+
+        }
         taskRepository.save(task);
     }
 

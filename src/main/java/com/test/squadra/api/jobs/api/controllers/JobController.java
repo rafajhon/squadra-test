@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.test.squadra.api.jobs.api.validation.JobValidation.validJob;
+
 @RestController("/jobs")
 public class JobController {
 
     private final JobService jobService;
-    private final JobValidation jobValidation;
 
     @Autowired
-    public JobController(JobService jobService, JobValidation jobValidation) {
+    public JobController(JobService jobService) {
         this.jobService = jobService;
-        this.jobValidation = jobValidation;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -33,7 +33,7 @@ public class JobController {
     @PostMapping
     public ResponseEntity<String> addJob( @RequestBody Job job) throws TaskExeception {
         try {
-            jobValidation.validJob(job);
+            validJob(job);
             jobService.addJob(job);
             return ResponseEntity.ok().body("created");
         }catch (JobException|TaskExeception e ) {
@@ -64,7 +64,7 @@ public class JobController {
     @PutMapping( value= "/jobs/{jobId}",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
     public ResponseEntity<String> atulizaJob(@PathVariable(value = "jobId") String jobId,@RequestBody Job job)  {
         try {
-            jobValidation.validJob(job);
+            validJob(job);
             jobService.updateJob(job, Long.valueOf(jobId));
             return ResponseEntity.ok().body("update");
         }catch (JobException |TaskExeception e) {

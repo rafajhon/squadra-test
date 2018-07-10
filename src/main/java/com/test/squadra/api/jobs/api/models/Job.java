@@ -1,8 +1,6 @@
 package com.test.squadra.api.jobs.api.models;
 
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -17,7 +15,7 @@ public class Job {
     @NotBlank(message = "required name is unique")
     @Column(unique=true)
     public String name;
-    @NotNull(message = "field active required")
+
     public Boolean active;
 
     @OneToOne(cascade = CascadeType.PERSIST)
