@@ -54,7 +54,8 @@ public class JobController {
     @DeleteMapping( value= "/jobs/{jobId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public  ResponseEntity<String> Deletejob(@PathVariable(value = "jobId") String jobId){
         try {
-            jobService.deleteJob(Long.valueOf(jobId));
+            Job job = jobService.getJobDb(Long.valueOf(jobId));
+            jobService.deleteJob(job);
             return ResponseEntity.ok().body("deleted");
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

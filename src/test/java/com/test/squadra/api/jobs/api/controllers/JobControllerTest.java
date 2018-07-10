@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static com.test.squadra.api.jobs.api.utils.Date.LocalDateUtils.stringToLocalDate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -96,9 +97,21 @@ class JobControllerTest extends ApplicationTests {
         assertNull(utilsTest.jobService.getJobByName("job 1"));
     }
     @Test
+    public void testDeletedJobOnParent() throws Exception {
+        Job job = utilsTest.createJobPersist("job 1", 1);
+        Job jobParent = utilsTest.createJobPersist("job 2", 2);
+        jobParent.parentJob = job;
+        utilsTest.jobService.saveJob(jobParent);
+        assertNotNull(utilsTest.jobService.getJobByName("job 1"));
+        mockMvc.perform(delete("/jobs/"+job.id))
+                .andExpect(status().isOk()).andDo(print()).andExpect(content().string("deleted"));
+        assertNull(utilsTest.jobService.getJobByName("job 1"));
+        assertEquals(0,utilsTest.jobService.countJobs());
+    }
+    @Test
     public void testDeletedJobIdNoneExist() throws Exception {
         mockMvc.perform(delete("/jobs/"+1))
-                .andExpect(status().isBadRequest()).andDo(print()).andExpect(content().string("No class com.test.squadra.api.jobs.api.models.Job entity with id 1 exists!"));
+                .andExpect(status().isBadRequest()).andDo(print()).andExpect(content().string("Job not found"));
     }
 
     @Test

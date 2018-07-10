@@ -7,8 +7,8 @@ import com.test.squadra.api.jobs.api.utils.exceptions.JobException;
 import com.test.squadra.api.jobs.api.utils.exceptions.TaskExeception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +53,11 @@ public class JobService {
         return job;
     }
 
+    @Transactional(rollbackFor = {JobException.class, TaskExeception.class})
     public void addJob(Job job) throws JobException, TaskExeception {
+        if(jobRepository.existsById(job.id)){
+            throw new JobException("job id already exists");
+        }
         taskService.saveTaskOnJob(job);
         addParentJob(job);
         saveJob(job);
@@ -61,8 +65,16 @@ public class JobService {
 
 
 
-    public void deleteJob(Long id) {
-        jobRepository.deleteById(id);
+    public void deleteJob(Job job) {
+        deleteChildrenByJob(job);
+    }
+
+    private void deleteChildrenByJob(Job job) {
+        Job jobChildren = jobRepository.findByParentJob(job);
+            if(jobChildren != null){
+                deleteChildrenByJob(jobChildren);
+            }
+            jobRepository.delete(job);
     }
 
     public void updateJob(Job job, Long jobId) throws JobException, TaskExeception {

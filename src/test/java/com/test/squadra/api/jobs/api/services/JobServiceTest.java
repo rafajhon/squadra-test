@@ -97,4 +97,26 @@ class JobServiceTest extends ApplicationTests {
         jobPersist = jobService.getJobDb(jobPersist.id);
         assertEquals(0,jobPersist.tasks.size());
     }
+
+    @Test
+    void deleteJobChildren() {
+        Job jobParent = utilsTest.createJobPersist("job parent",1);
+        Job jobChildren = utilsTest.createJobPersist("job children",2);
+        jobChildren.parentJob = jobParent;
+        jobService.saveJob(jobParent);
+        assertEquals(2, jobService.countJobs());
+        jobService.deleteJob(jobChildren);
+        assertEquals(1, jobService.countJobs());
+
+    } @Test
+    void deleteJobParent() {
+        Job jobParent = utilsTest.createJobPersist("job parent",1);
+        Job jobChildren = utilsTest.createJobPersist("job children",2);
+        jobChildren.parentJob = jobParent;
+        jobService.saveJob(jobChildren);
+        assertEquals(2, jobService.countJobs());
+        jobService.deleteJob(jobParent);
+        assertEquals(0, jobService.countJobs());
+
+    }
 }

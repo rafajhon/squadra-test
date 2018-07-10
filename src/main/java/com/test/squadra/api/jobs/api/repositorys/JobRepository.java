@@ -20,4 +20,6 @@ public interface JobRepository extends JpaRepository<Job,Long> {
             "INNER JOIN job.tasks tasks " +
             "WHERE tasks.id = ?1")
     Job findByIn_Tasks(Long taskDelete);
+
+    Job findByParentJob(Job job);
 }

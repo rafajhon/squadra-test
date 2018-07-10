@@ -3,6 +3,7 @@ package com.test.squadra.api.jobs.api.services;
 import com.test.squadra.api.jobs.api.models.Job;
 import com.test.squadra.api.jobs.api.models.Task;
 import com.test.squadra.api.jobs.api.repositorys.TaskRepository;
+import com.test.squadra.api.jobs.api.utils.exceptions.JobException;
 import com.test.squadra.api.jobs.api.utils.exceptions.TaskExeception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
