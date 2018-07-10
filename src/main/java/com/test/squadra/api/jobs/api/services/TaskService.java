@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.test.squadra.api.jobs.api.utils.Date.LocalDateUtils.stringToLocalDate;
 
@@ -80,5 +81,14 @@ public class TaskService {
 
     public boolean existById(Long id) {
         return taskRepository.existsById(id);
+    }
+
+    public Task getTaskById(Long taskId) throws TaskExeception {
+        Optional<Task> task = taskRepository.findById(Long.valueOf(taskId));
+        if (!task.isPresent()) {
+            throw new TaskExeception("Job not found");
+        }
+        return task.get();
+
     }
 }

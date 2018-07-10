@@ -2,6 +2,7 @@ package com.test.squadra.api.jobs.api.controllers;
 
 import com.test.squadra.api.jobs.api.ApplicationTests;
 import com.test.squadra.api.jobs.api.UtilsTest;
+import com.test.squadra.api.jobs.api.models.Job;
 import com.test.squadra.api.jobs.api.models.Task;
 import com.test.squadra.api.jobs.api.services.TaskService;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,6 +77,20 @@ public class TaskControllerTest extends ApplicationTests {
         mockMvc.perform(post("/tasks").header("Content-Type",
                 "application/json").content(utilsTest.getJsonTaksCompare(task))).andDo(print())
                 .andExpect(status().isBadRequest()).andExpect(content().string("task exist"));
+    }
+
+    @Test
+    public void testGetTask() throws Exception {
+        Task task = utilsTest.createTaskPersist( 1);
+        mockMvc.perform(get("/tasks/"+task.id))
+                .andExpect(status().isOk()).andDo(print()).andExpect(content().json(utilsTest
+                .getJsonTaksCompare(task)));
+    }
+
+    @Test
+    public void testGetTaskNull() throws Exception {
+        mockMvc.perform(get("/tasks/"+1))
+                .andExpect(status().isOk()).andDo(print()).andExpect(status().isOk());
     }
 
 }

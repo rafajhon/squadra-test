@@ -39,5 +39,13 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+    @GetMapping( value= "/tasks/{taskId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Task getTask(@PathVariable(value = "taskId") String taskId) throws TaskExeception {
+        try {
+            return taskService.getTaskById(Long.valueOf(taskId));
+        }catch (TaskExeception e){
+            return null;
+        }
+    }
 
 }

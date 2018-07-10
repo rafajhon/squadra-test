@@ -42,8 +42,13 @@ public class JobController {
     }
 
     @GetMapping( value= "/jobs/{jobId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Job getjob(@PathVariable(value = "jobId") String jobId){
-        return jobService.getJobsById(Long.valueOf(jobId));
+    public Job getjob(@PathVariable(value = "jobId") String jobId) throws JobException {
+        try {
+            return jobService.getJobDb(Long.valueOf(jobId));
+        }catch (JobException e){
+            return null;
+        }
+
     }
 
     @DeleteMapping( value= "/jobs/{jobId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

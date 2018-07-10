@@ -59,13 +59,7 @@ public class JobService {
         saveJob(job);
     }
 
-    public Job getJobsById(Long jobId) {
-        Optional<Job> jobOptional = jobRepository.findById(jobId);
-        if (jobOptional.isPresent()) {
-            return jobOptional.get();
-        }
-        return null;
-    }
+
 
     public void deleteJob(Long id) {
         jobRepository.deleteById(id);
