@@ -17,9 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -103,6 +101,19 @@ public class TaskControllerTest extends ApplicationTests {
                 .andExpect(status().isOk()).andDo(print()).andExpect(status().isOk()).andExpect
                 (content().string("deleted"));
         assertEquals(0,taskService.countTasks());
+
+    }
+
+    @Test
+    public void testPutTask() throws Exception {
+        Task task = utilsTest.createTaskPersist(1);
+        task.name = "task altered";
+        mockMvc.perform(put("/tasks/"+1).header("Content-Type",
+                "application/json").content(utilsTest.getJsonTaksCompare(task))).andDo
+                (print()).andExpect(status().isOk()).andExpect(content().string("update"));
+        task = taskService.getTaskById(Long.valueOf(1));
+        assertEquals(task.name,"task altered");
+
 
     }
 

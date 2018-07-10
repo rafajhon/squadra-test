@@ -98,4 +98,11 @@ public class TaskService {
         taskRepository.delete(task);
         taskRepository.flush();
     }
+
+    public void updateTask(Task task, Long aLong) throws TaskExeception {
+        getTaskById(aLong);
+        taskRepository.save(task);
+    }
+
+
 }

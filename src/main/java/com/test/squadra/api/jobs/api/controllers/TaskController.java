@@ -62,5 +62,16 @@ public class TaskController {
             return null;
         }
     }
+    @PutMapping( value= "/tasks/{taskId}",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public ResponseEntity<String> atulizaJob(@PathVariable(value = "taskId") String taskId,
+                                             @RequestBody Task task)  {
+        try {
+            taskValidate.validTask(task);
+            taskService.updateTask(task, Long.valueOf(taskId));
+            return ResponseEntity.ok().body("update");
+        }catch (TaskExeception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 }

@@ -17,7 +17,7 @@ public class TaskValidate {
 
     public void validTask(Task task) throws TaskExeception {
         if(taskService.existById(task.id)){
-            throw  new TaskExeception("task exist");
+//            throw  new TaskExeception("task exist");
         }
     }
 }
