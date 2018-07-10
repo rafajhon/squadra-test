@@ -25,6 +25,15 @@ public class Task {
     @NotNull(message = "field createdAt required")
     public LocalDate createdAt;
 
+    @Override
+    public boolean equals(Object o) {
+        boolean result = false;
+        if (this.getId() == ((Task)o).getId()) {
+            result = true;
+        }
+        return result;
+    }
+
 
 
     public Long getId() {

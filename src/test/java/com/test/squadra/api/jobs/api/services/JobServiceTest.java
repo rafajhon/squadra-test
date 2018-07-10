@@ -48,7 +48,7 @@ class JobServiceTest extends ApplicationTests {
     }
 
     @Test
-    void testAddParentJob() throws JobException {
+    public void testAddParentJob() throws JobException {
         Job job = new Job();
         job.id = Long.valueOf(2);
         job.parentJob = utilsTest.createJobPersist("job Parent",1);
@@ -57,7 +57,7 @@ class JobServiceTest extends ApplicationTests {
     }
 
     @Test
-    void testAddParentJobNotExist() {
+    public void testAddParentJobNotExist() {
         Job job = new Job();
         job.id = Long.valueOf(1);
         job.parentJob = new Job();
@@ -69,7 +69,7 @@ class JobServiceTest extends ApplicationTests {
         assertEquals("parentJob not found", jobException.getMessage());
     }
     @Test
-    void testAddParentJobReferenceItself() {
+    public void testAddParentJobReferenceItself() {
         Job job = new Job();
         job.id = Long.valueOf(1);
         job.parentJob = new Job();
@@ -80,7 +80,7 @@ class JobServiceTest extends ApplicationTests {
         assertEquals("can not reference itself", jobException.getMessage());
     }
     @Test
-    void testUpdadeJob() throws JobException, TaskExeception {
+    public void testUpdadeJob() throws JobException, TaskExeception {
         int numAux = 1;
         Job job = utilsTest.createJobPersist("job 1", numAux);
         assertNotNull(jobService.getJobByName(job.name));
@@ -89,5 +89,12 @@ class JobServiceTest extends ApplicationTests {
         jobService.updateJob(job, Long.valueOf(numAux));
         assertNotNull(jobService.getJobByName(job.name));
 
+    }
+    @Test
+    public void deleteRefenceTaksOnjob() throws JobException {
+        Job jobPersist = utilsTest.createJobPersist("job 1", 1);
+        jobService.deleteRefenceTaksOnjob(jobPersist.tasks.get(0));
+        jobPersist = jobService.getJobDb(jobPersist.id);
+        assertEquals(0,jobPersist.tasks.size());
     }
 }

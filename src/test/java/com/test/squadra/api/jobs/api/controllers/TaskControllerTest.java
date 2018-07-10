@@ -16,6 +16,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -91,6 +93,17 @@ public class TaskControllerTest extends ApplicationTests {
     public void testGetTaskNull() throws Exception {
         mockMvc.perform(get("/tasks/"+1))
                 .andExpect(status().isOk()).andDo(print()).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeletTask() throws Exception {
+        Job job = utilsTest.createJobPersist("job 1",1);
+        assertEquals(1,taskService.countTasks());
+        mockMvc.perform(delete("/tasks/"+1))
+                .andExpect(status().isOk()).andDo(print()).andExpect(status().isOk()).andExpect
+                (content().string("deleted"));
+        assertEquals(0,taskService.countTasks());
+
     }
 
 }

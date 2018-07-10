@@ -115,4 +115,12 @@ public class JobService {
     public int countJobs() {
         return Math.toIntExact(jobRepository.count());
     }
+
+    public void deleteRefenceTaksOnjob(Task task) {
+        Job job = jobRepository.findByIn_Tasks(task.id);
+        job.tasks.remove(task);
+        jobRepository.saveAndFlush(job);
+
+    }
+
 }

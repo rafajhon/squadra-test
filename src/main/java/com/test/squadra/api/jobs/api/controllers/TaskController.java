@@ -1,6 +1,7 @@
 package com.test.squadra.api.jobs.api.controllers;
 
 import com.test.squadra.api.jobs.api.models.Task;
+import com.test.squadra.api.jobs.api.services.JobService;
 import com.test.squadra.api.jobs.api.services.TaskService;
 import com.test.squadra.api.jobs.api.utils.exceptions.TaskExeception;
 import com.test.squadra.api.jobs.api.validation.TaskValidate;
@@ -16,11 +17,13 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
     private final TaskValidate taskValidate;
+    private final JobService jobService;
 
     @Autowired
-    public TaskController(TaskService taskService, TaskValidate taskValidate) {
+    public TaskController(TaskService taskService, TaskValidate taskValidate, JobService jobService) {
         this.taskService = taskService;
         this.taskValidate = taskValidate;
+        this.jobService = jobService;
     }
 
     @GetMapping(value = "/tasks",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -43,6 +46,18 @@ public class TaskController {
     public Task getTask(@PathVariable(value = "taskId") String taskId) throws TaskExeception {
         try {
             return taskService.getTaskById(Long.valueOf(taskId));
+        }catch (TaskExeception e){
+            return null;
+        }
+    }
+    @DeleteMapping( value= "/tasks/{taskId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> deleteTask(@PathVariable(value = "taskId") String taskId) throws
+    TaskExeception {
+        try {
+            Task task = taskService.getTaskById(Long.valueOf(taskId));
+            jobService.deleteRefenceTaksOnjob(task);
+            taskService.deleteTask(task);
+            return ResponseEntity.ok().body("deleted");
         }catch (TaskExeception e){
             return null;
         }

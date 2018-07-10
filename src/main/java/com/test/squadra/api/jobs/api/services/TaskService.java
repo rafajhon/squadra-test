@@ -2,7 +2,6 @@ package com.test.squadra.api.jobs.api.services;
 
 import com.test.squadra.api.jobs.api.models.Job;
 import com.test.squadra.api.jobs.api.models.Task;
-import com.test.squadra.api.jobs.api.repositorys.JobRepository;
 import com.test.squadra.api.jobs.api.repositorys.TaskRepository;
 import com.test.squadra.api.jobs.api.utils.exceptions.TaskExeception;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +19,11 @@ import static com.test.squadra.api.jobs.api.utils.Date.LocalDateUtils.stringToLo
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final JobRepository jobRepository;
+
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, JobRepository jobRepository) {
+    public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.jobRepository = jobRepository;
     }
 
 
@@ -68,7 +66,11 @@ public class TaskService {
             LocalDate localDate = stringToLocalDate(createdAt);
             return taskRepository.findByCreatedAt(localDate);
         }
+        return getAllTask();
+    }
+    public List<Task> getAllTask(){
         return taskRepository.findAll();
+
     }
 
     public Task saveTask(Task taskPersist) {
@@ -90,5 +92,10 @@ public class TaskService {
         }
         return task.get();
 
+    }
+
+    public void deleteTask(Task task) throws TaskExeception {
+        taskRepository.delete(task);
+        taskRepository.flush();
     }
 }

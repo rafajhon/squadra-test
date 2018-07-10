@@ -95,4 +95,13 @@ class TaskServiceTest extends ApplicationTests {
         tasks = taskService.getTasks("");
         assertEquals(2,tasks.size());
     }
+
+    @Test
+    void deleteTask() throws TaskExeception {
+        Task task = utilsTest.createTaskPersist( 1);
+        assertEquals(1,taskService.countTasks());
+        taskService.deleteTask(task);
+        assertEquals(0,taskService.countTasks());
+
+    }
 }
