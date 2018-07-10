@@ -16,6 +16,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,6 +61,21 @@ public class TaskControllerTest extends ApplicationTests {
                 .isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect
                 (content().json("["+utilsTest.getJsonTaksCompare(task)+"]"));
+
+    }
+    @Test
+    public void testAddTask() throws Exception {
+        Task task = utilsTest.createNewtask(1);
+        mockMvc.perform(post("/tasks").header("Content-Type",
+                "application/json").content(utilsTest.getJsonTaksCompare(task))).andDo(print())
+                .andExpect(status().isOk()).andExpect(content().string("created"));
+    }
+    @Test
+    public void testAddTaskFall() throws Exception {
+        Task task = utilsTest.createTaskPersist(1);
+        mockMvc.perform(post("/tasks").header("Content-Type",
+                "application/json").content(utilsTest.getJsonTaksCompare(task))).andDo(print())
+                .andExpect(status().isBadRequest()).andExpect(content().string("task exist"));
     }
 
 }

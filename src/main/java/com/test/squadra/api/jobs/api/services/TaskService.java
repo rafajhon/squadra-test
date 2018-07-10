@@ -18,8 +18,8 @@ import static com.test.squadra.api.jobs.api.utils.Date.LocalDateUtils.stringToLo
 @Service
 public class TaskService {
 
-    public final TaskRepository taskRepository;
-    public final JobRepository jobRepository;
+    private final TaskRepository taskRepository;
+    private final JobRepository jobRepository;
 
     @Autowired
     public TaskService(TaskRepository taskRepository, JobRepository jobRepository) {
@@ -72,5 +72,13 @@ public class TaskService {
 
     public Task saveTask(Task taskPersist) {
         return taskRepository.save(taskPersist);
+    }
+
+    public void addTask(Task task) {
+        taskRepository.save(task);
+    }
+
+    public boolean existById(Long id) {
+        return taskRepository.existsById(id);
     }
 }
