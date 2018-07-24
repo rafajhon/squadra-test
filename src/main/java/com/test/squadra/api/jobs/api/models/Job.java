@@ -21,7 +21,7 @@ public class Job {
     @OneToOne(cascade = CascadeType.PERSIST)
     public Job parentJob;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Task> tasks;
 
     public Integer weightJob;

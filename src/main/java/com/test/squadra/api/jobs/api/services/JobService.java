@@ -78,7 +78,7 @@ public class JobService {
     }
 
     public void updateJob(Job job, Long jobId) throws JobException, TaskExeception {
-        Job jobDb = getJobDb(jobId);
+        Job jobDb = getJobFetchTaskDb(jobId);
         setJobInJobDB(job, jobDb);
         setTask(job,jobDb);
         addParentJob(jobDb);
@@ -92,6 +92,11 @@ public class JobService {
             throw new JobException("Job not found");
         }
         return jobDbOptional.get();
+    }
+
+    public Job getJobFetchTaskDb(Long jobId){
+        Job job = jobRepository.findByIdFetchTasks(jobId);
+        return job;
     }
 
     public void setJobInJobDB(Job job, Job jobDb){

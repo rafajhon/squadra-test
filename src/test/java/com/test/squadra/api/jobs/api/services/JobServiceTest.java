@@ -94,7 +94,7 @@ class JobServiceTest extends ApplicationTests {
     public void deleteRefenceTaksOnjob() throws JobException {
         Job jobPersist = utilsTest.createJobPersist("job 1", 1);
         jobService.deleteRefenceTaksOnjob(jobPersist.tasks.get(0));
-        jobPersist = jobService.getJobDb(jobPersist.id);
+        jobPersist = jobService.getJobFetchTaskDb(jobPersist.id);
         assertEquals(0,jobPersist.tasks.size());
     }
 

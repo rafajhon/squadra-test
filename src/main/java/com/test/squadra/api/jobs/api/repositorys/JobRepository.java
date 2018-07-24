@@ -17,9 +17,15 @@ public interface JobRepository extends JpaRepository<Job,Long> {
 
     @Query("SELECT job " +
             "FROM Job job " +
-            "INNER JOIN job.tasks tasks " +
+            "INNER JOIN FETCH job.tasks tasks " +
             "WHERE tasks.id = ?1")
     Job findByIn_Tasks(Long taskDelete);
 
     Job findByParentJob(Job job);
+
+    @Query("SELECT job " +
+            "FROM Job job " +
+            "LEFT JOIN FETCH job.tasks " +
+            "WHERE job.id = :id")
+    Job findByIdFetchTasks(@Param("id")Long id);
 }
